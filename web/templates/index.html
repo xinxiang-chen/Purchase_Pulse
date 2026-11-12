@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f7f6">
+    <title>Purchase Pulse · U.S. shopping dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="{{ url_for('static', filename='js/socket.io.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/echarts.min.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
+</head>
+<body data-map-url="{{ url_for('static', filename='data/us-states.geojson') }}">
+    <header class="app-header">
+        <div class="app-header-inner">
+            <a class="brand" href="/" aria-label="Purchase Pulse home">
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+                <span>Purchase<span class="brand-light">Pulse</span></span>
+            </a>
+            <div class="header-context"><span class="context-divider"></span><span>Commerce intelligence</span></div>
+            <div class="connection-pill is-connecting" id="connection-pill" role="status" aria-live="polite">
+                <span class="status-dot" aria-hidden="true"></span><span id="connection-label">Connecting to data</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <section class="page-heading" aria-labelledby="page-title">
+            <div>
+                <div class="eyebrow"><span class="eyebrow-line"></span> UNITED STATES · LIVE OVERVIEW</div>
+                <h1 id="page-title">A pulse on every purchase.</h1>
+                <p class="page-subtitle">Follow shopping activity across age groups, states, and time.</p>
+            </div>
+            <div class="heading-meta"><span class="time-icon" aria-hidden="true">◷</span><span id="updated-at">Waiting for the first replay round</span></div>
+        </section>
+
+        <div class="stream-notice" id="stream-notice" role="status" aria-live="polite">
+            <span class="notice-dot" aria-hidden="true"></span><span id="stream-notice-text">Connecting to the purchase stream…</span>
+        </div>
+
+        <section class="kpi-grid" aria-label="Purchase summary">
+            <article class="kpi-card">
+                <div class="kpi-top"><h2>Total purchases</h2><span class="kpi-icon icon-teal" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></span></div>
+                <div class="kpi-value" id="total-purchases">0</div><p class="kpi-caption">Purchases this round</p>
+            </article>
+            <article class="kpi-card">
+                <div class="kpi-top"><h2>Total revenue</h2><span class="kpi-icon icon-sand" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M16 7.5c0-1.4-1.8-2.5-4-2.5S8 6.1 8 7.5s1.5 2.3 4 3 4 1.6 4 3.5-1.8 3-4 3-4-1.2-4-3"/></svg></span></div>
+                <div class="kpi-value" id="total-revenue">$0.00</div><p class="kpi-caption">Revenue this round · USD</p>
+            </article>
+            <article class="kpi-card">
+                <div class="kpi-top"><h2>Average purchase</h2><span class="kpi-icon icon-coral" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16M7 6h10M9 18h6"/><circle cx="12" cy="12" r="9"/></svg></span></div>
+                <div class="kpi-value" id="average-purchase">$0.00</div><p class="kpi-caption">This round · USD per purchase</p>
+            </article>
+            <article class="kpi-card">
+                <div class="kpi-top"><h2>Active states</h2><span class="kpi-icon icon-blue" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span></div>
+                <div class="kpi-value"><span id="active-states">0</span><span class="kpi-denominator">/ 50</span></div><p class="kpi-caption">Active states this round</p>
+            </article>
+        </section>
+
+        <section class="analysis-grid" aria-label="Shopping activity analysis">
+            <article class="panel geography-panel">
+                <div class="panel-header">
+                    <div><div class="panel-eyebrow">GEOGRAPHIC REACH</div><h2>Where America shops</h2><p>Purchase activity across all 50 states</p></div>
+                    <div class="segmented-control" role="group" aria-label="Map metric">
+                        <button type="button" class="is-active" data-map-metric="purchases" aria-pressed="true">Purchases</button>
+                        <button type="button" data-map-metric="revenue" aria-pressed="false">Revenue</button>
+                    </div>
+                </div>
+                <div class="map-stage">
+                    <div id="map-chart" class="map-chart" role="img" aria-label="United States map showing purchases by state"></div>
+                    <div class="chart-message" id="map-chart-message"><span class="loading-ring" aria-hidden="true"></span><span>Loading the U.S. map…</span></div>
+                </div>
+                <div class="map-footer"><span>Alaska &amp; Hawaii shown as insets</span><div class="map-scale" aria-label="Map color scale"><span>0</span><span class="map-gradient" aria-hidden="true"></span><span id="map-legend-max">0</span></div></div>
+            </article>
+
+            <article class="panel age-panel">
+                <div class="panel-header"><div><div class="panel-eyebrow">SHOPPER DEMOGRAPHICS</div><h2>Age, in perspective</h2><p>Purchase events by age group</p></div><span class="panel-mini-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h13M4 12h17M4 19h9"/></svg></span></div>
+                <div id="age-chart" class="age-chart" role="img" aria-label="Horizontal bar chart of purchase counts by age group"></div>
+                <div class="age-insight"><span class="insight-dot" aria-hidden="true"></span><span id="age-insight">Age groups will appear as purchases arrive.</span></div>
+            </article>
+
+            <article class="panel trend-panel">
+                <div class="panel-header"><div><div class="panel-eyebrow">LIVE ACTIVITY</div><h2>Purchases over time</h2><p>Purchase events per 5-second interval</p></div><div class="segmented-control" role="group" aria-label="Trend time window"><button type="button" data-trend-window="1" aria-pressed="false">1 min</button><button type="button" class="is-active" data-trend-window="5" aria-pressed="true">5 min</button></div></div>
+                <div id="trend-chart" class="trend-chart" role="img" aria-label="Line chart of purchase counts during the past five minutes"></div>
+                <div class="trend-footer"><span><strong id="trend-window-total">0</strong> purchases in the last <span id="trend-window-label">5 minutes</span></span><span class="bucket-label"><span></span>5-second buckets</span></div>
+            </article>
+
+            <article class="panel ranking-panel">
+                <div class="panel-header"><div><div class="panel-eyebrow">STATE LEADERBOARD</div><h2>Leading the way</h2><p id="ranking-description">Top states ranked by purchases</p></div><span class="small-tag">TOP 5</span></div>
+                <div class="ranking-content"><table class="ranking-table"><thead><tr><th scope="col">State</th><th scope="col">Purchases</th><th scope="col">Revenue</th></tr></thead><tbody id="state-ranking"></tbody></table><div class="ranking-empty" id="ranking-empty">State rankings appear as purchases arrive.</div></div>
+                <div class="ranking-footer">All 50 states are included in the map.</div>
+            </article>
+        </section>
+        <footer class="dashboard-footer"><span><span class="footer-mark" aria-hidden="true"></span>Purchase Pulse</span><span>Synthetic demo data · Counts reset each replay round · Purchase events, not unique shoppers · USD.</span></footer>
+    </main>
+</body>
+</html>

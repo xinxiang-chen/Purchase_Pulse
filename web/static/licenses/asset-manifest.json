@@ -1,0 +1,50 @@
+{
+  "map": {
+    "source": "https://echarts.apache.org/examples/data/asset/geo/USA.json",
+    "repository_file": "https://github.com/apache/echarts-examples/blob/gh-pages/public/data/asset/geo/USA.json",
+    "source_sha256": "625fee36be80a5422d21c5a5b922aed3ca028c27c9dc005ad73443bf37852834",
+    "license": "Apache-2.0 (upstream apache/echarts-examples repository)",
+    "license_source": "https://raw.githubusercontent.com/apache/echarts-examples/gh-pages/LICENSE",
+    "features": 50,
+    "transformation": "Exclude District of Columbia and Puerto Rico; add USPS code; round coordinates to 4 decimals; retain upstream simplified boundary vertices and FIPS ids.",
+    "state_codes_source": "https://pe.usps.com/text/pub28/pub28apb.htm",
+    "catalog_matches": "config/us_states.json"
+  },
+  "echarts": {
+    "version": "5.6.0",
+    "source": "https://raw.githubusercontent.com/apache/echarts/5.6.0/dist/echarts.min.js",
+    "license": "Apache-2.0; included d3 subcomponents under BSD-3-Clause",
+    "license_source": "https://raw.githubusercontent.com/apache/echarts/5.6.0/LICENSE",
+    "notice_source": "https://raw.githubusercontent.com/apache/echarts/5.6.0/NOTICE",
+    "d3_license_source": "https://raw.githubusercontent.com/apache/echarts/5.6.0/licenses/LICENSE-d3",
+    "source_sha256": "bf4a223524e40b77c304bec67e1222cf551f14880cf42c69dc046558e11c07b1",
+    "transformation": "Use upstream English text for both locale registrations; translate embedded geographic labels; escape the internal font-width probe; retain upstream notices and add a local-modification notice.",
+    "transformation_script": "scripts/english_assets.py"
+  },
+  "files": {
+    "us-states.geojson": {
+      "bytes": 74088,
+      "sha256": "03f2bed1d24943e1cc6234af383b7dbbfdc82ab57252e960d0e1cd5e867745a6"
+    },
+    "echarts.min.js": {
+      "bytes": 1034170,
+      "sha256": "0bf6d622e1edd878b019188b75ce6c00527eac1daaf8d1f08b0acca6f18524e6"
+    },
+    "ECHARTS-LICENSE": {
+      "bytes": 11990,
+      "sha256": "634293835b43a6dd2094fa39182a3d9a6b9ca43b7fdb9ac354e8037af2a3093a"
+    },
+    "ECHARTS-NOTICE": {
+      "bytes": 168,
+      "sha256": "fa99ac3af859d0e13166906dc53a73ad34a08898da7e8ae83407275496e9e30c"
+    },
+    "ECHARTS-LICENSE-d3": {
+      "bytes": 1475,
+      "sha256": "e1211892da0b0e0585b7aebe8f98c1274fba15bafe47fa1f4ee8a7a502c06304"
+    },
+    "MAP-LICENSE": {
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    }
+  }
+}
